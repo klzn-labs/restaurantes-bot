@@ -1,4 +1,4 @@
-# restaurante-bot / Floripa Bot 🤖
+# Floripa Bot 🤖
 
 Projeto do @FloripaBot (https://twitter.com/floripabot) que posta restaurantes aleatórios de Florianópolis e região com infos básicas e link do maps.
 
@@ -13,4 +13,4 @@ O intuito desse bot é ver quanto tempo demora pra tweetar o mini kalzone do lad
 
 ## Funcionamento 👨‍💻
 
-![Exemplo](https://i.postimg.cc/qvfjm9kC/image-3.png)
+![Exemplo](https://freeimage.host/i/HxSIoSj)
