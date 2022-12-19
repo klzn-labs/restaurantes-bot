@@ -73,10 +73,10 @@ def get_nearest_place_id(latitude, longitude) -> list:
 def get_place_details(place_id) -> dict:
     url = urljoin(
         GOOGLE_API_URL,
-        f"details/json?place_id={place_id}&fields=name%2Crating%2Cformatted_address%2Cphoto%2Curl&key={GOOGLE_APIKEY}",
+        f"details/json?place_id={place_id}&fields=name%2Crating%2Caddress_component%2Cphoto%2Curl&key={GOOGLE_APIKEY}",
     )
     place_details = requests.request("GET", url).json()
-	
+
     photo_ids = []
     try:
         photos = place_details["result"]["photos"]
@@ -98,14 +98,16 @@ def get_place_details(place_id) -> dict:
         pass
     place_details["result"]["media_ids"] = photo_ids
     return place_details["result"]
-    
-    
+
+
 def draw_stars(rating) -> str:
     return f"{'★'*int(rating)}{'☆'*(5-int(rating))}"
 
+address_map = {"NUMBER": 0, "STREET": 1, "DISTRICT": 2}
 
 def tweet(place_details):
-    tweet_text = f"{place_details['name']}  - {place_details['formatted_address']} - {draw_stars(place_details['rating'])}\n{place_details['url']}"
+    short_address = f"{place_details['address_components'][address_map['STREET']]['long_name']}, {place_details['address_components'][address_map['NUMBER']]['long_name']} - {place_details['address_components'][address_map['DISTRICT']]['long_name']}"
+    tweet_text = f"{place_details['name']} - {short_address} - {draw_stars(place_details['rating'])}\n{place_details['url']}"
     return api.update_status(status=tweet_text, media_ids=place_details["media_ids"])
 
 
