@@ -113,7 +113,7 @@ def get_nearest_place_id(latitude, longitude) -> list:
 def get_place_details(place_id) -> dict:
     url = urljoin(
         GOOGLE_API_URL,
-        f"details/json?place_id={place_id}&fields=name%2Crating%2Cformatted_address%2Cphoto%2Curl&key={GOOGLE_APIKEY}",
+        f"details/json?place_id={place_id}&fields=name%2Crating%2Caddress_component%2Cphoto%2Curl&key={GOOGLE_APIKEY}",
     )
     place_details = requests.request("GET", url).json()
 
@@ -143,9 +143,13 @@ def get_place_details(place_id) -> dict:
 def draw_stars(rating) -> str:
     return f"{'★'*int(rating)}{'☆'*(5-int(rating))}"
 
-
 def tweet(place_details):
-    tweet_text = f"{place_details['name']}  - {place_details['formatted_address']} - {draw_stars(place_details['rating'])}\n{place_details['url']}"
+    address_components = place_details['address_components']
+    number = address_components[0]["long_name"]
+    street = address_components[1]["long_name"]
+    district = address_components[2]["long_name"]
+    short_address = f"{street}, {number}, {district}"
+    tweet_text = f"{place_details['name']} - {short_address} - {draw_stars(place_details['rating'])}\n{place_details['url']}"
     return api.update_status(status=tweet_text, media_ids=place_details["media_ids"])
 
 
