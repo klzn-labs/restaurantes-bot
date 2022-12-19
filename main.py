@@ -100,7 +100,7 @@ def tweet(place_details):
     street = address_components[1]["long_name"]
     district = address_components[2]["long_name"]
     short_address = f"{street}, {number}, {district}"
-    tweet_text = f"{place_details['name']} - {short_address} - {draw_stars(place_details['rating'])}\n{place_details['url']}"
+    tweet_text = f"{place_details['name']} - {short_address}\n{draw_stars(place_details['rating'])}\n{place_details['url']}"
     return api.update_status(status=tweet_text, media_ids=place_details["media_ids"])
 
 
