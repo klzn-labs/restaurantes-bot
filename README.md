@@ -13,4 +13,4 @@ O intuito desse bot é ver quanto tempo demora pra tweetar o mini kalzone do lad
 
 ## Funcionamento 👨‍💻
 
-![Exemplo](https://freeimage.host/i/HxSIoSj)
+![Exemplo](https://iili.io/HxSIoSj.png)
