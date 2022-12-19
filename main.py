@@ -8,6 +8,9 @@ from geopy.geocoders import Nominatim
 import tweepy
 import random
 from shapely.geometry import Polygon, Point
+from dotenv import load_dotenv
+
+load_dotenv()
 
 CONSUMER_KEY = os.environ.get("CONSUMER_KEY", "")
 CONSUMER_SECRET = os.environ.get(
