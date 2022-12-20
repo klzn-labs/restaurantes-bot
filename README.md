@@ -8,8 +8,9 @@ O intuito desse bot é ver quanto tempo demora pra tweetar o mini kalzone do lad
 
 **Restaurantes mais esperados** 🍕
 - Mini Kalzone
-- Bere Birra Forneria
+- Smashking
 - Mr hoppys (o lugar que a ideia surgiu numa quinta a noite)
+- Lamen San (volte por favor)
 
 ## Funcionamento 👨‍💻
 
