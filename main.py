@@ -9,7 +9,7 @@ import random
 from shapely.geometry import Polygon, Point
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=False)
 
 CONSUMER_KEY = os.environ.get("CONSUMER_KEY", "")
 CONSUMER_SECRET = os.environ.get("CONSUMER_SECRET", "")
