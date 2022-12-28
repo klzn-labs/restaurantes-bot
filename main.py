@@ -9,6 +9,8 @@ import random
 from shapely.geometry import Polygon, Point
 from dotenv import load_dotenv
 
+from errors import NoPhotosFoundError, NoRatingFoundError
+
 load_dotenv(override=False)
 
 CONSUMER_KEY = os.environ.get("CONSUMER_KEY", "")
@@ -58,15 +60,23 @@ def get_nearest_place_id(latitude, longitude) -> list:
         for place in nearby_places["results"]
         if not ("lodging" in place["types"] or "gas_station" in place["types"])
     ]
-    return random.choice(filtered_places)["place_id"]
+    return random.choice(filtered_places)
 
 
-def get_place_details(place_id) -> dict:
+def get_place_details(near_place) -> dict:
+    place_id = near_place["place_id"]
+
     url = urljoin(
         GOOGLE_API_URL,
         f"details/json?place_id={place_id}&fields=name%2Crating%2Caddress_component%2Cphoto%2Curl&key={GOOGLE_APIKEY}",
     )
     place_details = requests.request("GET", url).json()
+
+    if not place_details["result"].get("photos"):
+        raise NoPhotosFoundError("Could not find any photo for this place")
+
+    if not place_details["result"].get("rating"):
+        raise NoRatingFoundError("Restaurant does not have user ratings right now")
 
     photo_ids = []
     try:
@@ -87,12 +97,16 @@ def get_place_details(place_id) -> dict:
     except:
         # No idea if the upload can fail, but probably it will fail sometime
         pass
-    place_details["result"]["media_ids"] = photo_ids
-    return place_details["result"]
+    place_details = place_details["result"]
+    place_details["media_ids"] = photo_ids
+    place_details["user_ratings_total"] = near_place["user_ratings_total"]
+
+    return place_details
 
 
 def draw_stars(rating) -> str:
     return f"{'★'*int(rating)}{'☆'*(5-int(rating))}"
+
 
 def tweet(place_details):
     address_components = place_details['address_components']
@@ -100,14 +114,15 @@ def tweet(place_details):
     street = address_components[1]["long_name"]
     district = address_components[2]["long_name"]
     short_address = f"{street}, {number}, {district}"
-    tweet_text = f"{place_details['name']} - {short_address}\n{draw_stars(place_details['rating'])}\n{place_details['url']}"
+    tweet_text = f"{place_details['name']} - {short_address}\n{draw_stars(place_details['rating'])} " \
+                 f"({place_details['user_ratings_total']})\n{place_details['url']}"
     return api.update_status(status=tweet_text, media_ids=place_details["media_ids"])
 
 
 def main():
     latitude, longitude = polygon_random_points(poly)
-    place_id = get_nearest_place_id(latitude, longitude)
-    place_details = get_place_details(place_id)
+    near_place = get_nearest_place_id(latitude, longitude)
+    place_details = get_place_details(near_place)
     tweet(place_details)
 
 
