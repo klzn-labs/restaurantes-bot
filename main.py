@@ -48,7 +48,7 @@ def polygon_random_points(polygon) -> tuple:
 def get_nearest_place_id(latitude, longitude) -> list:
     url = urljoin(
         GOOGLE_API_URL,
-        f"nearbysearch/json?location={latitude}%2C{longitude}&radius=8000&type=restaurant&key={GOOGLE_APIKEY}",
+        f"nearbysearch/json?location={latitude}%2C{longitude}&rankby=distance&type=restaurant&key={GOOGLE_APIKEY}",
     )
 
     nearby_places = requests.request("GET", url, headers={}, data={}).json()
