@@ -43,8 +43,10 @@ poly = Polygon(
 
 def polygon_random_points(polygon) -> tuple:
     min_x, min_y, max_x, max_y = polygon.bounds
-    random_point = Point([random.uniform(min_x, max_x), random.uniform(min_y, max_y)])
-    return random_point.x, random_point.y
+    while True:
+        random_point = Point([random.uniform(min_x, max_x), random.uniform(min_y, max_y)])
+        if random_point.within(polygon):
+            return random_point.x, random_point.y
 
 
 def get_nearest_place_id(latitude, longitude) -> list:
