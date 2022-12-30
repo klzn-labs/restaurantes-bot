@@ -9,7 +9,7 @@ import random
 from shapely.geometry import Polygon, Point
 from dotenv import load_dotenv
 
-from errors import NoPhotosFoundError, NoRatingFoundError
+from errors import NoPhotosFoundError
 
 load_dotenv(override=False)
 
