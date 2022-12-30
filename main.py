@@ -61,6 +61,7 @@ def get_nearest_place_id(latitude, longitude) -> list:
         place
         for place in nearby_places["results"]
         if not ("lodging" in place["types"] or "gas_station" in place["types"])
+        and place.get("user_ratings_total", 0) > 25
     ]
     return random.choice(filtered_places)
 
@@ -76,9 +77,6 @@ def get_place_details(near_place) -> dict:
 
     if not place_details["result"].get("photos"):
         raise NoPhotosFoundError("Could not find any photo for this place")
-
-    if not place_details["result"].get("rating"):
-        raise NoRatingFoundError("Restaurant does not have user ratings right now")
 
     photo_ids = []
     try:
