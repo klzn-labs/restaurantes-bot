@@ -8,6 +8,7 @@ import tweepy
 import random
 from shapely.geometry import Polygon, Point
 from dotenv import load_dotenv
+from math import ceil, floor
 
 from errors import NoPhotosFoundError
 
@@ -105,7 +106,10 @@ def get_place_details(near_place) -> dict:
 
 
 def draw_stars(rating) -> str:
-    return f"{'★'*int(rating)}{'☆'*(5-int(rating))}"
+    full_stars = "★" * floor(rating)
+    half_star = "⯪" * ceil(rating % 1)
+    clear_stars = "☆" * (5 - ceil(rating))
+    return f"{full_stars}{half_star}{clear_stars}"
 
 
 def tweet(place_details):
@@ -114,8 +118,12 @@ def tweet(place_details):
     street = address_components[1]["long_name"]
     district = address_components[2]["long_name"]
     short_address = f"{street}, {number}, {district}"
-    tweet_text = f"{place_details['name']} - {short_address}\n{draw_stars(place_details['rating'])} " \
-                 f"({place_details['user_ratings_total']})\n{place_details['url']}"
+    rating = place_details["rating"]
+    tweet_text = (
+        f"{place_details['name']} - {short_address}\n"
+        f"{rating} {draw_stars(rating)} ({place_details['user_ratings_total']})\n"
+        f"{place_details['url']}"
+    )
     return api.update_status(status=tweet_text, media_ids=place_details["media_ids"])
 
 
