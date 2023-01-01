@@ -8,7 +8,6 @@ import tweepy
 import random
 from shapely.geometry import Polygon, Point
 from dotenv import load_dotenv
-from math import ceil, floor
 
 from errors import NoPhotosFoundError
 
@@ -106,10 +105,10 @@ def get_place_details(near_place) -> dict:
 
 
 def draw_stars(rating) -> str:
-    full_stars = "★" * floor(rating)
-    half_star = "⯪" * ceil(rating % 1)
-    clear_stars = "☆" * (5 - ceil(rating))
-    return f"{full_stars}{half_star}{clear_stars}"
+    rating = int(rating)
+    full_stars = "★" * rating
+    clear_stars = "☆" * (5 - rating)
+    return f"{full_stars}{clear_stars}"
 
 
 def tweet(place_details):
